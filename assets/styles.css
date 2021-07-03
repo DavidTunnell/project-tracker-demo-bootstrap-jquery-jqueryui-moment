@@ -130,6 +130,18 @@
         .modal {
             width: 50%;
         }
+        
+        .input-validation {
+            color: red;
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .hide {
+            display: none;
+        }
         /*
  * Footer
  */
