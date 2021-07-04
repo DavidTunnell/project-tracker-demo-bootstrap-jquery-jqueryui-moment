@@ -11,14 +11,18 @@ $(document).ready(function() {
     var projectTableEl = $(".project-table");
     var modalEl = $(".modal");
     var userValidationEl = $(".input-validation");
+    var deleteButton = $(".delete-button");
+    var projectTable = $(".table-striped");
     //get and format current datetime then set it on an 1 sec interval
     var currentDateTime;
     setInterval(function() {
         currentDateTime = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
         dateTimeEl.text(currentDateTime);
     }, 1000);
+
     //set current year
     currentYearEl.text(moment().format('YYYY'));
+
     //open modal on add project button click w/ jQueryUI
     addProjectButton.on('click', function() {
         userValidationEl.addClass('hide');
@@ -28,6 +32,7 @@ $(document).ready(function() {
             modal: true
         });
     });
+
     //save button on click function
     saveProjectButton.on('click', function() {
         if (projectNameInput.val() && projectTypeInput.val() && datePickerInput.val() && hourlyRateInput.val()) {
@@ -38,11 +43,16 @@ $(document).ready(function() {
             projectNameInput.val('');
             projectTypeInput.prop('selectedIndex', 0);
             hourlyRateInput.val('');
-
         } else {
             userValidationEl.removeClass('hide');
         }
     });
+
+    //delete row using delegation
+    projectTable.on('click', '.delete-button', function() {
+        $(this).parent().parent().remove();
+    });
+
     //create a table row and append it
     function printToTable(projectName, projectType, hourlyRate, dueDate) {
         //delete button variable and add
@@ -51,10 +61,11 @@ $(document).ready(function() {
             '</td><td>$' + hourlyRate +
             '</td><td>' + dueDate +
             '</td><td>' + calculateDaysLeft(dueDate) +
-            '</td><td>$' + calculatePotentialEarnings(hourlyRate, dueDate) + '</td><td><button type="button" class="btn btn-danger">Delete</button></td></tr>';
+            '</td><td>$' + calculatePotentialEarnings(hourlyRate, dueDate) + '</td><td><button type="button" class="btn btn-danger delete-button">Delete</button></td></tr>';
         projectTableEl.append(newRow);
-
+        deleteButton = $(".delete-button");
     }
+
     // calculates how many dates left until the due date 
     function calculateDaysLeft(dueDate) {
         //get current datetime
@@ -62,6 +73,7 @@ $(document).ready(function() {
         //return the difference
         return (currentDay.diff(dueDate, 'days') * -1) + 1;
     }
+
     //calculate potential earning (8 hour work day)
     function calculatePotentialEarnings(hourlyRate, dueDate) {
         return (hourlyRate * 8) * calculateDaysLeft(dueDate);
